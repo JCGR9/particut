@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Particut Pro - Procesador Profesional de Partituras</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/src/styles.css">
+  </head>
+  <body>
+    <div id="app">
+      <!-- Header -->
+      <header class="header">
+        <div class="container">
+          <div class="header-content">
+            <div class="logo">
+              <i class="fas fa-music"></i>
+              <h1>Particut <span>Pro</span></h1>
+            </div>
+            <div class="header-info">
+              <span class="version">v1.0</span>
+              <span class="tagline">Procesador Profesional de Partituras</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="main">
+        <div class="container">
+          
+          <!-- File Upload Section -->
+        <!-- Upload Section -->
+        <section id="upload-section" class="section">
+          <div class="section-header">
+            <h2><i class="fas fa-cloud-upload-alt"></i> Cargar Partituras</h2>
+            <div class="header-controls">
+              <button id="load-examples-btn" class="btn btn-secondary">
+                <i class="fas fa-file-music"></i> Cargar Ejemplos
+              </button>
+              <button id="clear-all-btn" class="btn btn-outline">
+                <i class="fas fa-trash"></i> Limpiar Todo
+              </button>
+            </div>
+          </div>
+          <div class="section-content">
+            <div id="drop-zone" class="drop-zone">
+              <i class="fas fa-music"></i>
+              <h3>Arrastra y suelta tus partituras aquí</h3>
+              <p>Soporta archivos PDF e imágenes (PNG, JPG) - Múltiples archivos a la vez</p>
+              <div class="drop-zone-buttons">
+                <button id="select-files-btn" class="btn btn-primary">
+                  <i class="fas fa-folder-open"></i> Seleccionar Archivos
+                </button>
+                <button id="select-folder-btn" class="btn btn-secondary">
+                  <i class="fas fa-folder"></i> Seleccionar Carpeta
+                </button>
+              </div>
+              <input type="file" id="file-input" multiple accept=".pdf,.png,.jpg,.jpeg" style="display: none;">
+              <input type="file" id="folder-input" webkitdirectory multiple style="display: none;">
+            </div>
+            
+            <!-- File Management Panel -->
+            <div id="file-management" class="file-management">
+              <div class="file-controls">
+                <div class="file-stats">
+                  <span id="file-count">0 archivos</span>
+                  <span id="total-pages">0 páginas</span>
+                  <span id="total-size">0 KB</span>
+                </div>
+                <div class="file-actions">
+                  <button id="sort-name-btn" class="btn btn-small">
+                    <i class="fas fa-sort-alpha-down"></i> Nombre
+                  </button>
+                  <button id="sort-date-btn" class="btn btn-small">
+                    <i class="fas fa-sort-numeric-down"></i> Fecha
+                  </button>
+                  <button id="sort-size-btn" class="btn btn-small">
+                    <i class="fas fa-sort-amount-down"></i> Tamaño
+                  </button>
+                </div>
+              </div>
+              <div id="file-list" class="file-list"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Preview and Editing Section -->
+        <section id="preview-section" class="section">
+          <div class="section-header">
+            <h2><i class="fas fa-eye"></i> Vista Previa y Edición</h2>
+            <div class="header-controls">
+              <div class="zoom-controls">
+                <button id="zoom-out-btn" class="btn btn-small">
+                  <i class="fas fa-search-minus"></i>
+                </button>
+                <span id="zoom-level">100%</span>
+                <button id="zoom-in-btn" class="btn btn-small">
+                  <i class="fas fa-search-plus"></i>
+                </button>
+                <button id="fit-width-btn" class="btn btn-small">
+                  <i class="fas fa-arrows-alt-h"></i> Ajustar
+                </button>
+              </div>
+              <div class="view-controls">
+                <button id="grid-view-btn" class="btn btn-small active">
+                  <i class="fas fa-th"></i> Cuadrícula
+                </button>
+                <button id="list-view-btn" class="btn btn-small">
+                  <i class="fas fa-list"></i> Lista
+                </button>
+                <button id="single-view-btn" class="btn btn-small">
+                  <i class="fas fa-file"></i> Individual
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="section-content">
+            <!-- Multi-file Navigation -->
+            <div id="file-navigation" class="file-navigation">
+              <div class="file-tabs" id="file-tabs"></div>
+              <div class="navigation-controls">
+                <button id="prev-file-btn" class="btn btn-small">
+                  <i class="fas fa-chevron-left"></i> Anterior
+                </button>
+                <span id="file-position">1 / 1</span>
+                <button id="next-file-btn" class="btn btn-small">
+                  <i class="fas fa-chevron-right"></i> Siguiente
+                </button>
+              </div>
+            </div>
+            
+            <!-- Preview Canvas Container -->
+            <div id="preview-container" class="preview-container">
+              <div id="preview-grid" class="preview-grid">
+                <!-- Páginas se cargarán aquí dinámicamente -->
+              </div>
+              
+              <!-- Page Selection Tools -->
+              <div id="page-tools" class="page-tools">
+                <div class="tool-group">
+                  <button id="select-all-pages-btn" class="btn btn-small">
+                    <i class="fas fa-check-square"></i> Seleccionar Todo
+                  </button>
+                  <button id="deselect-all-pages-btn" class="btn btn-small">
+                    <i class="fas fa-square"></i> Deseleccionar Todo
+                  </button>
+                  <button id="invert-selection-btn" class="btn btn-small">
+                    <i class="fas fa-exchange-alt"></i> Invertir Selección
+                  </button>
+                </div>
+                <div class="tool-group">
+                  <button id="crop-selected-btn" class="btn btn-primary">
+                    <i class="fas fa-crop"></i> Recortar Seleccionadas
+                  </button>
+                  <button id="rotate-selected-btn" class="btn btn-secondary">
+                    <i class="fas fa-redo"></i> Rotar 90°
+                  </button>
+                  <button id="delete-selected-btn" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Eliminar
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Crop Tool -->
+            <div id="crop-tool" class="crop-tool" style="display: none;">
+              <div class="crop-header">
+                <h4><i class="fas fa-crop"></i> Herramienta de Recorte</h4>
+                <button id="close-crop-btn" class="btn btn-small btn-outline">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+              <div class="crop-controls">
+                <div class="crop-presets">
+                  <button class="crop-preset-btn" data-preset="auto">Auto</button>
+                  <button class="crop-preset-btn" data-preset="margins">Solo Márgenes</button>
+                  <button class="crop-preset-btn" data-preset="content">Solo Contenido</button>
+                  <button class="crop-preset-btn" data-preset="custom">Personalizado</button>
+                </div>
+                <div class="crop-values">
+                  <label>Superior: <input type="number" id="crop-top" min="0" max="100" value="0"> mm</label>
+                  <label>Derecho: <input type="number" id="crop-right" min="0" max="100" value="0"> mm</label>
+                  <label>Inferior: <input type="number" id="crop-bottom" min="0" max="100" value="0"> mm</label>
+                  <label>Izquierdo: <input type="number" id="crop-left" min="0" max="100" value="0"> mm</label>
+                </div>
+                <div class="crop-actions">
+                  <button id="apply-crop-btn" class="btn btn-primary">Aplicar Recorte</button>
+                  <button id="reset-crop-btn" class="btn btn-secondary">Restablecer</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Book Configuration Section -->
+        <section id="config-section" class="section">
+          <div class="section-header">
+            <h2><i class="fas fa-book"></i> Configuración del Cuaderno</h2>
+            <div class="header-controls">
+              <button id="save-config-btn" class="btn btn-secondary">
+                <i class="fas fa-save"></i> Guardar Config
+              </button>
+              <button id="load-config-btn" class="btn btn-secondary">
+                <i class="fas fa-folder-open"></i> Cargar Config
+              </button>
+            </div>
+          </div>
+          <div class="section-content">
+            <div class="config-grid">
+              <!-- Paper Configuration -->
+              <div class="config-group">
+                <h3><i class="fas fa-file-alt"></i> Formato de Papel</h3>
+                <div class="config-controls">
+                  <div class="control-group">
+                    <label for="paper-size">Tamaño del Papel:</label>
+                    <select id="paper-size">
+                      <option value="a4">A4 (210 × 297 mm)</option>
+                      <option value="letter">Carta (216 × 279 mm)</option>
+                      <option value="legal">Legal (216 × 356 mm)</option>
+                      <option value="a3">A3 (297 × 420 mm)</option>
+                      <option value="a5">A5 (148 × 210 mm)</option>
+                      <option value="custom">Personalizado</option>
+                    </select>
+                  </div>
+                  <div class="control-group" id="custom-size-group" style="display: none;">
+                    <label>Ancho: <input type="number" id="custom-width" min="50" max="500" value="210"> mm</label>
+                    <label>Alto: <input type="number" id="custom-height" min="50" max="500" value="297"> mm</label>
+                  </div>
+                  <div class="control-group">
+                    <label for="paper-orientation">Orientación:</label>
+                    <select id="paper-orientation">
+                      <option value="portrait">Vertical (Retrato)</option>
+                      <option value="landscape">Horizontal (Paisaje)</option>
+                      <option value="auto">Automática</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Layout Configuration -->
+              <div class="config-group">
+                <h3><i class="fas fa-th-large"></i> Diseño de Página</h3>
+                <div class="config-controls">
+                  <div class="control-group">
+                    <label for="pages-per-sheet">Partituras por Hoja:</label>
+                    <select id="pages-per-sheet">
+                      <option value="1">1 (Tamaño Completo)</option>
+                      <option value="2">2 (Dúo)</option>
+                      <option value="4">4 (Cuarteto)</option>
+                      <option value="6">6 (Sexteto)</option>
+                      <option value="8">8 (Octeto)</option>
+                      <option value="custom">Personalizado</option>
+                    </select>
+                  </div>
+                  <div class="control-group" id="custom-layout-group" style="display: none;">
+                    <label>Filas: <input type="number" id="layout-rows" min="1" max="5" value="2"></label>
+                    <label>Columnas: <input type="number" id="layout-cols" min="1" max="5" value="2"></label>
+                  </div>
+                  <div class="control-group">
+                    <label for="scaling-mode">Modo de Escalado:</label>
+                    <select id="scaling-mode">
+                      <option value="fit">Ajustar al Espacio</option>
+                      <option value="fill">Llenar Espacio</option>
+                      <option value="fixed">Tamaño Fijo</option>
+                      <option value="percentage">Porcentaje</option>
+                    </select>
+                  </div>
+                  <div class="control-group" id="scaling-value-group">
+                    <label>Valor de Escala: <input type="range" id="scale-value" min="10" max="200" value="100"> <span id="scale-display">100%</span></label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Margins and Spacing -->
+              <div class="config-group">
+                <h3><i class="fas fa-border-style"></i> Márgenes y Espaciado</h3>
+                <div class="config-controls">
+                  <div class="control-group">
+                    <label>Margen Superior: <input type="number" id="margin-top" min="0" max="50" value="10"> mm</label>
+                    <label>Margen Derecho: <input type="number" id="margin-right" min="0" max="50" value="10"> mm</label>
+                    <label>Margen Inferior: <input type="number" id="margin-bottom" min="0" max="50" value="10"> mm</label>
+                    <label>Margen Izquierdo: <input type="number" id="margin-left" min="0" max="50" value="10"> mm</label>
+                  </div>
+                  <div class="control-group">
+                    <label>Espaciado Horizontal: <input type="number" id="spacing-h" min="0" max="20" value="5"> mm</label>
+                    <label>Espaciado Vertical: <input type="number" id="spacing-v" min="0" max="20" value="5"> mm</label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Cutting Marks -->
+              <div class="config-group">
+                <h3><i class="fas fa-cut"></i> Marcas de Corte</h3>
+                <div class="config-controls">
+                  <div class="control-group">
+                    <label class="checkbox-label">
+                      <input type="checkbox" id="show-cut-marks" checked>
+                      <span class="checkmark"></span>
+                      Mostrar Marcas de Corte
+                    </label>
+                  </div>
+                  <div class="control-group">
+                    <label for="cut-mark-style">Estilo de Marca:</label>
+                    <select id="cut-mark-style">
+                      <option value="lines">Líneas</option>
+                      <option value="corners">Esquinas</option>
+                      <option value="crosses">Cruces</option>
+                      <option value="dots">Puntos</option>
+                    </select>
+                  </div>
+                  <div class="control-group">
+                    <label>Longitud de Marca: <input type="number" id="cut-mark-length" min="2" max="10" value="5"> mm</label>
+                    <label>Grosor de Línea: <input type="number" id="cut-mark-width" min="0.1" max="2" step="0.1" value="0.5"> mm</label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Book Assembly -->
+              <div class="config-group">
+                <h3><i class="fas fa-book-open"></i> Encuadernación</h3>
+                <div class="config-controls">
+                  <div class="control-group">
+                    <label for="binding-type">Tipo de Encuadernación:</label>
+                    <select id="binding-type">
+                      <option value="none">Sin Encuadernación</option>
+                      <option value="staple">Grapas</option>
+                      <option value="spiral">Espiral</option>
+                      <option value="perfect">Encuadernación Perfecta</option>
+                      <option value="saddle">Cosido al Centro</option>
+                    </select>
+                  </div>
+                  <div class="control-group">
+                    <label class="checkbox-label">
+                      <input type="checkbox" id="add-page-numbers">
+                      <span class="checkmark"></span>
+                      Agregar Números de Página
+                    </label>
+                  </div>
+                  <div class="control-group">
+                    <label class="checkbox-label">
+                      <input type="checkbox" id="add-index">
+                      <span class="checkmark"></span>
+                      Generar Índice Automático
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quality Settings -->
+              <div class="config-group">
+                <h3><i class="fas fa-cog"></i> Calidad y Optimización</h3>
+                <div class="config-controls">
+                  <div class="control-group">
+                    <label for="output-quality">Calidad de Salida:</label>
+                    <select id="output-quality">
+                      <option value="draft">Borrador (72 DPI)</option>
+                      <option value="normal">Normal (150 DPI)</option>
+                      <option value="high" selected>Alta (300 DPI)</option>
+                      <option value="print">Impresión (600 DPI)</option>
+                    </select>
+                  </div>
+                  <div class="control-group">
+                    <label class="checkbox-label">
+                      <input type="checkbox" id="optimize-for-print" checked>
+                      <span class="checkmark"></span>
+                      Optimizar para Impresión
+                    </label>
+                  </div>
+                  <div class="control-group">
+                    <label class="checkbox-label">
+                      <input type="checkbox" id="compress-output">
+                      <span class="checkmark"></span>
+                      Comprimir Archivo de Salida
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="config-actions">
+              <button id="preview-config-btn" class="btn btn-secondary">
+                <i class="fas fa-eye"></i> Vista Previa de Configuración
+              </button>
+              <button id="process-all-btn" class="btn btn-primary">
+                <i class="fas fa-magic"></i> Procesar Todas las Partituras
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Layout Preview Section -->
+        <section id="layout-section" class="section">
+          <div class="section-header">
+            <h2><i class="fas fa-th-large"></i> Vista Previa del Layout</h2>
+            <div class="header-controls">
+              <div class="layout-navigation">
+                <button id="prev-layout-page-btn" class="btn btn-small">
+                  <i class="fas fa-chevron-left"></i> Página Anterior
+                </button>
+                <span id="layout-page-info">Página 1 de 1</span>
+                <button id="next-layout-page-btn" class="btn btn-small">
+                  <i class="fas fa-chevron-right"></i> Página Siguiente
+                </button>
+              </div>
+              <div class="layout-controls">
+                <button id="refresh-layout-btn" class="btn btn-secondary">
+                  <i class="fas fa-sync-alt"></i> Actualizar
+                </button>
+                <button id="export-layout-btn" class="btn btn-primary">
+                  <i class="fas fa-download"></i> Exportar Layout
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="section-content">
+            <div id="layout-container" class="layout-container">
+              <div id="layout-canvas-container" class="layout-canvas-container">
+                <canvas id="layout-canvas"></canvas>
+                <div id="layout-overlay" class="layout-overlay">
+                  <!-- Crop marks and guides will be drawn here -->
+                </div>
+              </div>
+              
+              <!-- Layout Statistics -->
+              <div id="layout-stats" class="layout-stats">
+                <div class="stat-item">
+                  <i class="fas fa-file-pdf"></i>
+                  <span class="stat-label">Páginas Totales:</span>
+                  <span class="stat-value" id="total-layout-pages">0</span>
+                </div>
+                <div class="stat-item">
+                  <i class="fas fa-music"></i>
+                  <span class="stat-label">Partituras:</span>
+                  <span class="stat-value" id="total-scores">0</span>
+                </div>
+                <div class="stat-item">
+                  <i class="fas fa-percentage"></i>
+                  <span class="stat-label">Aprovechamiento:</span>
+                  <span class="stat-value" id="paper-efficiency">0%</span>
+                </div>
+                <div class="stat-item">
+                  <i class="fas fa-ruler"></i>
+                  <span class="stat-label">Tamaño Promedio:</span>
+                  <span class="stat-value" id="avg-scale">100%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Processing Progress Section -->
+        <section id="progress-section" class="section" style="display: none;">
+          <div class="section-header">
+            <h2><i class="fas fa-cogs"></i> Procesando Partituras</h2>
+            <div class="header-controls">
+              <button id="cancel-process-btn" class="btn btn-danger">
+                <i class="fas fa-stop"></i> Cancelar Proceso
+              </button>
+            </div>
+          </div>
+          <div class="section-content">
+            <div class="progress-container">
+              <!-- Overall Progress -->
+              <div class="progress-item">
+                <div class="progress-header">
+                  <span class="progress-label">Progreso General</span>
+                  <span class="progress-percentage" id="overall-percentage">0%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" id="overall-progress"></div>
+                </div>
+                <div class="progress-details">
+                  <span id="current-file-name">Preparando...</span>
+                  <span id="processing-speed">0 páginas/seg</span>
+                </div>
+              </div>
+
+              <!-- Current Task Progress -->
+              <div class="progress-item">
+                <div class="progress-header">
+                  <span class="progress-label">Tarea Actual</span>
+                  <span class="progress-percentage" id="task-percentage">0%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" id="task-progress"></div>
+                </div>
+                <div class="progress-details">
+                  <span id="current-task">Inicializando...</span>
+                  <span id="estimated-time">Tiempo estimado: --</span>
+                </div>
+              </div>
+
+              <!-- Processing Log -->
+              <div class="processing-log">
+                <div class="log-header">
+                  <h4><i class="fas fa-list"></i> Registro de Procesamiento</h4>
+                  <button id="clear-log-btn" class="btn btn-small btn-outline">
+                    <i class="fas fa-trash"></i> Limpiar
+                  </button>
+                </div>
+                <div id="processing-log-content" class="log-content">
+                  <!-- Log entries will be added here -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Results Section -->
+        <section id="results-section" class="section" style="display: none;">
+          <div class="section-header">
+            <h2><i class="fas fa-check-circle"></i> Resultados</h2>
+            <div class="header-controls">
+              <button id="download-all-btn" class="btn btn-primary">
+                <i class="fas fa-download"></i> Descargar Todo
+              </button>
+              <button id="share-results-btn" class="btn btn-secondary">
+                <i class="fas fa-share-alt"></i> Compartir
+              </button>
+            </div>
+          </div>
+          <div class="section-content">
+            <div class="results-container">
+              <!-- Processing Summary -->
+              <div class="results-summary">
+                <div class="summary-card">
+                  <h3><i class="fas fa-chart-pie"></i> Resumen del Procesamiento</h3>
+                  <div class="summary-stats">
+                    <div class="stat-group">
+                      <div class="stat">
+                        <span class="stat-number" id="processed-files">0</span>
+                        <span class="stat-label">Archivos Procesados</span>
+                      </div>
+                      <div class="stat">
+                        <span class="stat-number" id="total-output-pages">0</span>
+                        <span class="stat-label">Páginas Generadas</span>
+                      </div>
+                      <div class="stat">
+                        <span class="stat-number" id="processing-time">0</span>
+                        <span class="stat-label">Tiempo Total (seg)</span>
+                      </div>
+                    </div>
+                    <div class="stat-group">
+                      <div class="stat">
+                        <span class="stat-number" id="paper-saved">0</span>
+                        <span class="stat-label">Papel Ahorrado (%)</span>
+                      </div>
+                      <div class="stat">
+                        <span class="stat-number" id="output-size">0</span>
+                        <span class="stat-label">Tamaño Final (MB)</span>
+                      </div>
+                      <div class="stat">
+                        <span class="stat-number" id="compression-ratio">0</span>
+                        <span class="stat-label">Compresión (%)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Download Options -->
+              <div class="download-options">
+                <h3><i class="fas fa-download"></i> Opciones de Descarga</h3>
+                <div class="download-grid">
+                  <div class="download-item">
+                    <div class="download-info">
+                      <i class="fas fa-file-pdf"></i>
+                      <div class="download-details">
+                        <h4>Cuaderno Completo</h4>
+                        <p>Todas las partituras en un solo PDF optimizado</p>
+                        <span class="file-size" id="full-book-size">-- MB</span>
+                      </div>
+                    </div>
+                    <button id="download-full-book-btn" class="btn btn-primary">
+                      <i class="fas fa-download"></i> Descargar
+                    </button>
+                  </div>
+
+                  <div class="download-item">
+                    <div class="download-info">
+                      <i class="fas fa-file-archive"></i>
+                      <div class="download-details">
+                        <h4>Archivos Separados</h4>
+                        <p>Cada partitura en su propio archivo PDF</p>
+                        <span class="file-size" id="separate-files-size">-- MB</span>
+                      </div>
+                    </div>
+                    <button id="download-separate-btn" class="btn btn-secondary">
+                      <i class="fas fa-download"></i> Descargar ZIP
+                    </button>
+                  </div>
+
+                  <div class="download-item">
+                    <div class="download-info">
+                      <i class="fas fa-print"></i>
+                      <div class="download-details">
+                        <h4>Versión de Impresión</h4>
+                        <p>Optimizado para impresoras profesionales</p>
+                        <span class="file-size" id="print-version-size">-- MB</span>
+                      </div>
+                    </div>
+                    <button id="download-print-btn" class="btn btn-success">
+                      <i class="fas fa-download"></i> Descargar
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Preview Final Result -->
+              <div class="final-preview">
+                <h3><i class="fas fa-eye"></i> Vista Previa del Resultado Final</h3>
+                <div id="final-preview-container" class="final-preview-container">
+                  <!-- Final result preview will be shown here -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="container">
+          <p>&copy; 2024 Particut Pro - Procesador Profesional de Partituras</p>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Message Container for debugging -->
+    <div id="message-container" class="message-container"></div>
+
+    <script type="module" src="/src/main-simple.js"></script>
+  </body>
+</html>

@@ -1,0 +1,525 @@
+/* Particut Pro - Estilos Adicionales */
+
+/* Animaciones */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Mejoras en la interfaz */
+.drop-zone.dragover {
+    animation: pulse 1s infinite;
+    border-color: var(--success);
+    background: rgba(5, 150, 105, 0.1);
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Mejoras en las herramientas de recorte */
+.crop-overlay {
+    border: 2px solid var(--primary);
+    background: rgba(37, 99, 235, 0.15);
+    transition: all 0.2s ease;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8), 0 0 10px rgba(37, 99, 235, 0.3);
+    position: absolute;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.crop-overlay:hover {
+    background: rgba(37, 99, 235, 0.2);
+}
+
+.crop-handles {
+    transition: all 0.2s ease;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8);
+}
+
+.crop-handles:hover {
+    transform: scale(1.2);
+    background: var(--secondary);
+}
+
+/* Indicador visual para modo de recorte manual */
+.canvas-container.manual-crop-mode {
+    border: 2px dashed var(--primary) !important;
+    background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        rgba(37, 99, 235, 0.05) 10px,
+        rgba(37, 99, 235, 0.05) 20px
+    );
+}
+
+.canvas-container.manual-crop-mode::before {
+    content: 'Haz clic y arrastra para seleccionar área';
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(37, 99, 235, 0.9);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    z-index: 10;
+    animation: fadeInDown 0.5s ease;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Información del recorte */
+#crop-info {
+    font-family: 'Courier New', monospace;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Mejora del cursor durante el recorte */
+.preview-canvas[data-crop-mode="true"] {
+    cursor: crosshair !important;
+}
+
+body.cropping {
+    cursor: crosshair !important;
+}
+
+/* Estados de los botones de recorte */
+.btn.crop-active {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    animation: pulse 2s infinite;
+}
+
+/* Overlay mejorado para áreas de recorte */
+.crop-overlay::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    background: var(--primary);
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: cropPulse 1.5s infinite;
+}
+
+@keyframes cropPulse {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 0.4;
+    }
+}
+
+/* Efectos de scroll suave */
+.file-list,
+#pages-preview {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+
+.file-list::-webkit-scrollbar,
+#pages-preview::-webkit-scrollbar {
+    width: 6px;
+}
+
+.file-list::-webkit-scrollbar-track,
+#pages-preview::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.file-list::-webkit-scrollbar-thumb,
+#pages-preview::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+}
+
+.file-list::-webkit-scrollbar-thumb:hover,
+#pages-preview::-webkit-scrollbar-thumb:hover {
+    background: #c1c7cd;
+}
+
+/* Estados de carga */
+.loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    to {
+        left: 100%;
+    }
+}
+
+/* Tooltips */
+.tooltip {
+    position: relative;
+}
+
+.tooltip::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--dark);
+    color: white;
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 1000;
+}
+
+.tooltip:hover::before {
+    opacity: 1;
+}
+
+/* Estados de los archivos */
+.file-item.processing {
+    background: rgba(37, 99, 235, 0.05);
+    border-color: var(--primary);
+}
+
+.file-item.processed {
+    background: rgba(5, 150, 105, 0.05);
+    border-color: var(--success);
+}
+
+.file-item.error {
+    background: rgba(220, 38, 38, 0.05);
+    border-color: var(--error);
+}
+
+/* Mejoras en las previsualizaciones */
+.page-preview {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.page-preview::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(37, 99, 235, 0.1) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.page-preview:hover::before {
+    opacity: 1;
+}
+
+.page-preview.processed::after {
+    content: '✓';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: var(--success);
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+/* Efectos en los controles deslizantes */
+input[type="range"] {
+    appearance: none;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: var(--primary);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: #1d4ed8;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: var(--primary);
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+    transform: scale(1.1);
+    background: #1d4ed8;
+}
+
+/* Mejoras en la barra de progreso */
+.progress-bar {
+    position: relative;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    background: linear-gradient(90deg, var(--success), #34d399);
+    border-radius: 10px;
+    transition: width 0.5s ease;
+    position: relative;
+}
+
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transform: translateX(-100%);
+}
+
+.progress-fill.active::after {
+    animation: progressShine 2s infinite;
+}
+
+@keyframes progressShine {
+    to {
+        transform: translateX(100%);
+    }
+}
+
+/* Estados de hover mejorados */
+.sidebar .section:hover {
+    background: rgba(248, 250, 252, 0.8);
+    transition: background 0.2s ease;
+}
+
+.controls-bar .control-group:hover {
+    background: rgba(37, 99, 235, 0.05);
+    border-radius: 8px;
+    padding: 0.5rem;
+    margin: -0.5rem;
+    transition: all 0.2s ease;
+}
+
+/* Responsive improvements */
+@media (max-width: 1200px) {
+    .main-container {
+        max-width: 95%;
+    }
+    
+    .sidebar {
+        width: 320px;
+    }
+}
+
+@media (max-width: 992px) {
+    .content {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+        max-height: 50vh;
+        order: 2;
+    }
+    
+    .main-panel {
+        order: 1;
+        min-height: 50vh;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    .main-container {
+        border-radius: 10px;
+        min-height: 95vh;
+    }
+    
+    .header {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .controls-bar {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .control-group {
+        justify-content: center;
+    }
+}
+
+/* Dark mode support (experimental) */
+@media (prefers-color-scheme: dark) {
+    .dark-mode {
+        --primary: #3b82f6;
+        --secondary: #8b5cf6;
+        --dark: #f9fafb;
+        --light: #111827;
+        --border: #374151;
+    }
+    
+    .dark-mode body {
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+    }
+    
+    .dark-mode .main-container {
+        background: #1f2937;
+        color: #f9fafb;
+    }
+    
+    .dark-mode .sidebar {
+        background: #111827;
+    }
+    
+    .dark-mode .canvas-container {
+        background: #374151;
+    }
+}
+
+/* Efectos especiales para elementos activos */
+.btn.active {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.section.active {
+    border-left: 4px solid var(--primary);
+    background: rgba(37, 99, 235, 0.02);
+}
+
+/* Indicadores de estado */
+.status-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}
+
+.status-indicator.ready {
+    background: var(--success);
+}
+
+.status-indicator.processing {
+    background: var(--warning);
+    animation: pulse 1s infinite;
+}
+
+.status-indicator.error {
+    background: var(--error);
+}
+
+/* Mejoras en la tipografía */
+.logo {
+    letter-spacing: -0.5px;
+}
+
+h3 {
+    letter-spacing: -0.3px;
+}
+
+/* Efectos de enfoque mejorados */
+.form-control:focus,
+.btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    border-color: var(--primary);
+}
+
+/* Transiciones suaves para cambios de estado */
+* {
+    transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}

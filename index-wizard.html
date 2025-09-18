@@ -1,0 +1,662 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Particut Pro - Procesador Profesional de Partituras</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/src/style.css">
+    <style>
+      :root {
+        --primary-color: #6366f1;
+        --secondary-color: #f59e0b;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --error-color: #ef4444;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-400: #9ca3af;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #374151;
+        --gray-800: #1f2937;
+        --gray-900: #111827;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: var(--gray-800);
+      }
+
+      .app-container {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 1rem 0;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+      }
+
+      .logo i {
+        font-size: 2rem;
+      }
+
+      .main-content {
+        flex: 1;
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 2rem;
+        width: 100%;
+      }
+
+      .wizard-container {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .wizard-header {
+        background: linear-gradient(135deg, var(--primary-color), #8b5cf6);
+        color: white;
+        padding: 2rem;
+        text-align: center;
+      }
+
+      .wizard-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+
+      .wizard-subtitle {
+        opacity: 0.9;
+        font-size: 1.1rem;
+      }
+
+      .step-indicator {
+        display: flex;
+        justify-content: center;
+        padding: 2rem;
+        background: var(--gray-50);
+        border-bottom: 1px solid var(--gray-200);
+      }
+
+      .step {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .step:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        right: -2rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 2rem;
+        height: 2px;
+        background: var(--gray-300);
+      }
+
+      .step.active {
+        background: var(--primary-color);
+        color: white;
+      }
+
+      .step.completed {
+        background: var(--success-color);
+        color: white;
+      }
+
+      .step.completed::after {
+        background: var(--success-color);
+      }
+
+      .step-content {
+        padding: 3rem;
+        min-height: 500px;
+      }
+
+      .step-panel {
+        display: none;
+      }
+
+      .step-panel.active {
+        display: block;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-size: 0.95rem;
+      }
+
+      .btn-primary {
+        background: var(--primary-color);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #5855eb;
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        background: var(--gray-200);
+        color: var(--gray-700);
+      }
+
+      .btn-secondary:hover {
+        background: var(--gray-300);
+      }
+
+      .btn-success {
+        background: var(--success-color);
+        color: white;
+      }
+
+      .btn-large {
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+      }
+
+      .navigation-buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 2rem 3rem;
+        background: var(--gray-50);
+        border-top: 1px solid var(--gray-200);
+      }
+
+      .drop-zone {
+        border: 3px dashed var(--gray-300);
+        border-radius: 12px;
+        padding: 3rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .drop-zone:hover,
+      .drop-zone.dragover {
+        border-color: var(--primary-color);
+        background: rgba(99, 102, 241, 0.05);
+      }
+
+      .drop-zone i {
+        font-size: 4rem;
+        color: var(--gray-400);
+        margin-bottom: 1rem;
+      }
+
+      .drop-zone h3 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: var(--gray-700);
+      }
+
+      .drop-zone p {
+        color: var(--gray-500);
+        margin-bottom: 2rem;
+      }
+
+      .file-list {
+        margin-top: 2rem;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+
+      .file-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem;
+        border: 1px solid var(--gray-200);
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        background: white;
+      }
+
+      .file-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .file-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--primary-color);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+      }
+
+      .file-details h4 {
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+      }
+
+      .file-meta {
+        font-size: 0.875rem;
+        color: var(--gray-500);
+      }
+
+      .preview-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 2rem;
+      }
+
+      .preview-card {
+        border: 1px solid var(--gray-200);
+        border-radius: 8px;
+        padding: 1rem;
+        background: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .preview-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .preview-card.selected {
+        border-color: var(--primary-color);
+        background: rgba(99, 102, 241, 0.05);
+      }
+
+      .preview-image {
+        width: 100%;
+        height: 150px;
+        background: var(--gray-100);
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 0.5rem;
+      }
+
+      .instruction-panel {
+        background: linear-gradient(135deg, #e0f2fe, #f3e5f5);
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border-left: 4px solid var(--primary-color);
+      }
+
+      .instruction-panel h3 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .step-counter {
+        background: var(--primary-color);
+        color: white;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.875rem;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 2rem;
+      }
+
+      .spinner {
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--gray-300);
+        border-top: 2px solid var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      .stats-bar {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 2rem;
+        padding: 1rem;
+        background: var(--gray-50);
+        border-radius: 8px;
+      }
+
+      .stat-item {
+        text-align: center;
+      }
+
+      .stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+      }
+
+      .stat-label {
+        font-size: 0.875rem;
+        color: var(--gray-500);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- Header -->
+      <header class="header">
+        <div class="header-content">
+          <div class="logo">
+            <i class="fas fa-music"></i>
+            <span>Particut <strong>Pro</strong></span>
+          </div>
+          <div class="version">v2.0 - Flujo Guiado</div>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <div class="wizard-container">
+          <!-- Wizard Header -->
+          <div class="wizard-header">
+            <h1 class="wizard-title">Procesador de Partituras</h1>
+            <p class="wizard-subtitle">Te guiaremos paso a paso para crear tu cuaderno de partituras perfecto</p>
+          </div>
+
+          <!-- Step Indicator -->
+          <div class="step-indicator">
+            <div class="step active" data-step="1">
+              <span class="step-counter">1</span>
+              <span>Cargar Archivos</span>
+            </div>
+            <div class="step" data-step="2">
+              <span class="step-counter">2</span>
+              <span>Vista Previa</span>
+            </div>
+            <div class="step" data-step="3">
+              <span class="step-counter">3</span>
+              <span>Configuración</span>
+            </div>
+            <div class="step" data-step="4">
+              <span class="step-counter">4</span>
+              <span>Generar PDF</span>
+            </div>
+          </div>
+
+          <!-- Step Content -->
+          <div class="step-content">
+            <!-- Paso 1: Cargar Archivos -->
+            <div id="step-1" class="step-panel active">
+              <div class="instruction-panel">
+                <h3>
+                  <i class="fas fa-upload"></i>
+                  Paso 1: Cargar tus Partituras
+                </h3>
+                <p>Comienza cargando los archivos PDF de tus partituras. Puedes arrastrar y soltar archivos o hacer clic para seleccionarlos. También puedes probar con nuestros archivos de ejemplo.</p>
+              </div>
+
+              <div class="drop-zone" id="drop-zone">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h3>Arrastra tus partituras aquí</h3>
+                <p>Soporta archivos PDF - Puedes cargar múltiples archivos a la vez</p>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                  <button id="select-files-btn" class="btn btn-primary">
+                    <i class="fas fa-folder-open"></i>
+                    Seleccionar Archivos
+                  </button>
+                  <button id="load-examples-btn" class="btn btn-secondary">
+                    <i class="fas fa-file-music"></i>
+                    Cargar Ejemplos
+                  </button>
+                </div>
+                <input type="file" id="file-input" multiple accept=".pdf" style="display: none;">
+              </div>
+
+              <div id="file-list-container" class="hidden">
+                <div class="stats-bar">
+                  <div class="stat-item">
+                    <div class="stat-value" id="file-count">0</div>
+                    <div class="stat-label">Archivos</div>
+                  </div>
+                  <div class="stat-item">
+                    <div class="stat-value" id="total-size">0 KB</div>
+                    <div class="stat-label">Tamaño Total</div>
+                  </div>
+                </div>
+                <div id="file-list" class="file-list"></div>
+              </div>
+            </div>
+
+            <!-- Paso 2: Vista Previa -->
+            <div id="step-2" class="step-panel">
+              <div class="instruction-panel">
+                <h3>
+                  <i class="fas fa-eye"></i>
+                  Paso 2: Vista Previa y Selección
+                </h3>
+                <p>Revisa las páginas de tus partituras y selecciona cuáles quieres incluir en tu cuaderno final. Puedes hacer clic en las páginas para seleccionarlas o deseleccionarlas.</p>
+              </div>
+
+              <div class="loading" id="preview-loading">
+                <div class="spinner"></div>
+                <span>Generando vistas previas...</span>
+              </div>
+
+              <div id="preview-container" class="hidden">
+                <div class="stats-bar">
+                  <div class="stat-item">
+                    <div class="stat-value" id="total-pages">0</div>
+                    <div class="stat-label">Páginas Totales</div>
+                  </div>
+                  <div class="stat-item">
+                    <div class="stat-value" id="selected-pages">0</div>
+                    <div class="stat-label">Seleccionadas</div>
+                  </div>
+                  <div style="margin-left: auto;">
+                    <button id="select-all-btn" class="btn btn-secondary">Seleccionar Todas</button>
+                    <button id="deselect-all-btn" class="btn btn-secondary">Deseleccionar Todas</button>
+                  </div>
+                </div>
+                <div id="preview-grid" class="preview-grid"></div>
+              </div>
+            </div>
+
+            <!-- Paso 3: Configuración -->
+            <div id="step-3" class="step-panel">
+              <div class="instruction-panel">
+                <h3>
+                  <i class="fas fa-cog"></i>
+                  Paso 3: Configuración del Cuaderno
+                </h3>
+                <p>Configura cómo quieres que se vea tu cuaderno final. Elige el tamaño de página, márgenes y disposición que mejor se adapte a tus necesidades.</p>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                  <h4 style="margin-bottom: 1rem;">Formato de Página</h4>
+                  <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem;">Tamaño:</label>
+                    <select id="page-size" class="form-control">
+                      <option value="a4">A4 (210 × 297 mm)</option>
+                      <option value="letter">Carta (216 × 279 mm)</option>
+                      <option value="legal">Legal (216 × 356 mm)</option>
+                    </select>
+                  </div>
+                  <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem;">Orientación:</label>
+                    <select id="orientation" class="form-control">
+                      <option value="portrait">Vertical</option>
+                      <option value="landscape">Horizontal</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 style="margin-bottom: 1rem;">Márgenes</h4>
+                  <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem;">Superior (mm):</label>
+                    <input type="number" id="margin-top" value="20" min="0" max="50" class="form-control">
+                  </div>
+                  <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem;">Inferior (mm):</label>
+                    <input type="number" id="margin-bottom" value="20" min="0" max="50" class="form-control">
+                  </div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div>
+                      <label style="display: block; margin-bottom: 0.5rem;">Izquierdo (mm):</label>
+                      <input type="number" id="margin-left" value="15" min="0" max="50" class="form-control">
+                    </div>
+                    <div>
+                      <label style="display: block; margin-bottom: 0.5rem;">Derecho (mm):</label>
+                      <input type="number" id="margin-right" value="15" min="0" max="50" class="form-control">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="margin-top: 2rem;">
+                <h4 style="margin-bottom: 1rem;">Vista Previa del Layout</h4>
+                <div id="layout-preview" style="border: 1px solid var(--gray-300); border-radius: 8px; padding: 2rem; background: var(--gray-50); text-align: center; min-height: 200px;">
+                  <div style="border: 2px dashed var(--gray-400); border-radius: 4px; padding: 2rem;">
+                    <i class="fas fa-file-alt" style="font-size: 3rem; color: var(--gray-400); margin-bottom: 1rem;"></i>
+                    <p style="color: var(--gray-500);">Vista previa del layout se mostrará aquí</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Paso 4: Generar PDF -->
+            <div id="step-4" class="step-panel">
+              <div class="instruction-panel">
+                <h3>
+                  <i class="fas fa-download"></i>
+                  Paso 4: Generar tu Cuaderno
+                </h3>
+                <p>¡Ya casi está! Revisa el resumen de tu configuración y genera tu cuaderno de partituras personalizado.</p>
+              </div>
+
+              <div id="generation-summary" style="background: var(--gray-50); padding: 2rem; border-radius: 8px; margin-bottom: 2rem;">
+                <h4 style="margin-bottom: 1rem;">Resumen de tu Cuaderno</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                  <div class="stat-item">
+                    <div class="stat-value" id="summary-pages">0</div>
+                    <div class="stat-label">Páginas Incluidas</div>
+                  </div>
+                  <div class="stat-item">
+                    <div class="stat-value" id="summary-format">A4</div>
+                    <div class="stat-label">Formato</div>
+                  </div>
+                  <div class="stat-item">
+                    <div class="stat-value" id="summary-size">0 MB</div>
+                    <div class="stat-label">Tamaño Estimado</div>
+                  </div>
+                </div>
+              </div>
+
+              <div id="generation-controls" style="text-align: center;">
+                <button id="generate-pdf-btn" class="btn btn-success btn-large">
+                  <i class="fas fa-file-pdf"></i>
+                  Generar Cuaderno PDF
+                </button>
+              </div>
+
+              <div id="generation-progress" class="hidden" style="margin-top: 2rem;">
+                <div style="background: var(--gray-200); border-radius: 4px; overflow: hidden;">
+                  <div id="progress-bar" style="background: var(--success-color); height: 8px; width: 0%; transition: width 0.3s ease;"></div>
+                </div>
+                <p id="progress-text" style="text-align: center; margin-top: 1rem; color: var(--gray-600);">Preparando...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Navigation -->
+          <div class="navigation-buttons">
+            <button id="prev-btn" class="btn btn-secondary hidden">
+              <i class="fas fa-arrow-left"></i>
+              Anterior
+            </button>
+            <div></div>
+            <button id="next-btn" class="btn btn-primary hidden">
+              Siguiente
+              <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Message Container -->
+    <div id="message-container" style="position: fixed; top: 20px; right: 20px; z-index: 1000;"></div>
+
+    <script type="module" src="/src/main-wizard.js"></script>
+  </body>
+</html>

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Particut - Procesador de Partituras</title>
+    <style>
+      body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #333; }
+      h1 { text-align: center; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+      #dropZone { border: 3px dashed #fff; padding: 40px; text-align: center; margin-bottom: 30px; background: rgba(255,255,255,0.1); border-radius: 15px; transition: all 0.3s; cursor: pointer; }
+      #dropZone:hover { background: rgba(255,255,255,0.2); transform: scale(1.02); }
+      #fileList { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 30px; }
+      .fileItem { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; min-width: 150px; }
+      .fileItem img { width: 100px; height: 100px; object-fit: cover; border-radius: 5px; margin-bottom: 10px; }
+      #preview { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 30px; }
+      .previewItem { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+      .zoomControls { display: flex; gap: 5px; margin-bottom: 10px; }
+      .zoomControls button { background: #667eea; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+      .zoomControls button:hover { background: #5a6fd8; }
+      canvas { border: 2px solid #ddd; border-radius: 5px; max-width: 100%; }
+      #controls { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 30px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: center; }
+      #controls label { font-weight: bold; }
+      #controls input { padding: 8px; border: 1px solid #ddd; border-radius: 5px; }
+      #controls button { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 20px; border-radius: 25px; cursor: pointer; font-weight: bold; transition: all 0.3s; }
+      #controls button:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+      #output { text-align: center; font-weight: bold; color: white; }
+      #layoutPreview { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-top: 30px; display: none; }
+      #layoutCanvas { border: 2px solid #ddd; border-radius: 5px; }
+    </style>
+  </head>
+  <body>
+    <h1>🎼 Particut - Procesador de Partituras</h1>
+    <div id="dropZone">Arrastra y suelta archivos PDF o imágenes aquí, o haz clic para seleccionar<br><small>Solo archivos .pdf, .jpg, .jpeg, .png</small></div>
+    <input type="file" id="fileInput" multiple accept=".pdf,.jpg,.jpeg,.png" style="display: none;" />
+    <div id="fileList"></div>
+    <div id="controls">
+      <label>Margen superior (mm): <input type="number" id="topMargin" value="20" /></label>
+      <label>Margen inferior (mm): <input type="number" id="bottomMargin" value="15" /></label>
+      <button id="updatePreviewBtn">🔄 Actualizar Vista Previa</button>
+      <button id="layoutBtn">📐 Vista de Layout</button>
+      <button id="processBtn">⚡ Procesar Archivos</button>
+    </div>
+    <div id="preview"></div>
+    <div id="layoutPreview">
+      <h3>Vista de Layout en A4</h3>
+      <canvas id="layoutCanvas"></canvas>
+      <p>Esta vista muestra cómo quedarían las partituras en un folio A4. Ajusta los márgenes y actualiza para ver cambios.</p>
+    </div>
+    <div id="output"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

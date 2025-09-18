@@ -27,8 +27,11 @@ class ParticutPro {
         console.log('🎵 Inicializando Particut Pro...');
         
         try {
-            // Configurar PDF.js
-            pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
+            // Configurar PDF.js worker para desarrollo y producción
+            if (typeof window !== 'undefined') {
+                // En producción, usar el worker desde la carpeta public
+                pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
+            }
             
             // Obtener elementos del DOM
             this.canvas = document.getElementById('preview-canvas');

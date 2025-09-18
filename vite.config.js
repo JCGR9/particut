@@ -12,15 +12,14 @@ export default defineConfig({
     // Generate source maps for production builds
     sourcemap: true,
     
-    // Minify with terser for better compatibility
-    minify: 'terser',
+    // Minify with esbuild for better compatibility and speed
+    minify: 'esbuild',
     
     // Rollup options
     rollupOptions: {
       output: {
         // Manual chunks for better caching
         manualChunks: {
-          'pdf-worker': ['pdfjs-dist/build/pdf.worker.entry'],
           'pdf-lib': ['pdfjs-dist'],
           'jspdf': ['jspdf']
         }
@@ -62,7 +61,7 @@ export default defineConfig({
   
   // Optimizations
   optimizeDeps: {
-    include: ['pdfjs-dist', 'jspdf'],
-    exclude: ['opencv.js'] // Exclude problematic dependencies
+    include: ['pdfjs-dist/build/pdf.js', 'jspdf'],
+    exclude: ['pdfjs-dist/build/pdf.worker.entry']
   }
 })
